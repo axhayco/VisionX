@@ -3714,3 +3714,183 @@ body {
   color: #1e40af !important;
 }
 
+/* ─── WORKFLOW PIPELINE MODAL LIGHT-THEME OVERRIDES ─── */
+.wf-modal {
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.03) !important;
+  color: var(--text-primary) !important;
+}
+
+.modal-header h2 {
+  color: var(--text-primary) !important;
+}
+
+.modal-header p {
+  color: var(--text-secondary) !important;
+}
+
+.modal-close {
+  color: var(--text-secondary) !important;
+}
+.modal-close:hover {
+  color: var(--text-primary) !important;
+  background-color: #f1f5f9 !important;
+}
+
+.form-group label {
+  color: var(--text-secondary) !important;
+  font-weight: 600 !important;
+}
+
+.form-input {
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+.form-input:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+}
+
+.upload-tabs {
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+.tab-btn {
+  color: var(--text-secondary) !important;
+}
+.tab-btn.active {
+  background-color: rgba(79, 70, 229, 0.08) !important;
+  border-color: rgba(79, 70, 229, 0.3) !important;
+  color: #4f46e5 !important;
+}
+.tab-btn:not(.active):hover {
+  background-color: #f1f5f9 !important;
+  color: var(--text-primary) !important;
+}
+
+.file-upload-zone {
+  border: 2px dashed #cbd5e1 !important;
+  background-color: #f8fafc !important;
+}
+.file-upload-zone:hover,
+.file-upload-zone.drag-active {
+  border-color: #4f46e5 !important;
+  background-color: #eff6ff !important;
+}
+
+.selected-file-box {
+  background-color: #f8fafc !important;
+  border-color: var(--border-color) !important;
+}
+
+.node-pending .node-circle {
+  border-color: #cbd5e1 !important;
+  background: #f1f5f9 !important;
+}
+.node-pending .node-label {
+  color: var(--text-muted) !important;
+}
+
+.node-active .node-circle {
+  border-color: #4f46e5 !important;
+  background: rgba(79, 70, 229, 0.08) !important;
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.2) !important;
+}
+.node-active .node-label {
+  color: #4f46e5 !important;
+}
+
+.node-done .node-circle {
+  border-color: var(--priority-normal) !important;
+  background: rgba(16, 185, 129, 0.08) !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.15) !important;
+}
+.node-done .node-label {
+  color: var(--priority-normal) !important;
+}
+
+.pipeline-connector {
+  background: #e2e8f0 !important;
+}
+.pipeline-connector.connector-done {
+  background: rgba(16, 185, 129, 0.4) !important;
+}
+
+.pipeline-detail-card {
+  background: rgba(79, 70, 229, 0.05) !important;
+  border: 1px solid rgba(79, 70, 229, 0.2) !important;
+}
+.pipeline-detail-sub {
+  color: var(--text-secondary) !important;
+}
+
+.pipeline-error-box {
+  background: rgba(239, 68, 68, 0.05) !important;
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  color: var(--text-primary) !important;
+}
+
+.verify-table-wrap {
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-md) !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+}
+
+.verify-table th {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-secondary) !important;
+}
+
+.verify-row td {
+  border-bottom: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+.verify-row:last-child td {
+  border-bottom: none !important;
+}
+
+.verify-param {
+  color: var(--text-primary) !important;
+}
+
+.verify-unit {
+  color: var(--text-secondary) !important;
+}
+
+.verify-range {
+  color: var(--text-secondary) !important;
+}
+
+.verify-input {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: var(--text-primary) !important;
+}
+.verify-input:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+}
+
+.btn-secondary {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: var(--text-secondary) !important;
+}
+.btn-secondary:hover {
+  background-color: #e2e8f0 !important;
+  color: var(--text-primary) !important;
+}
+
+.btn-submit {
+  background-color: #4f46e5 !important;
+  color: #ffffff !important;
+}
+.btn-submit:hover {
+  background-color: #3c35b8 !important;
+}
+
+
