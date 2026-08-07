@@ -7,7 +7,6 @@ COPY frontend/package*.json ./frontend/
 RUN cd frontend && npm ci
 
 COPY frontend/ ./frontend/
-COPY backend/app/static/ ./backend/app/static/
 
 # Build the frontend (Vite config builds to ../backend/app/static)
 RUN cd frontend && npm run build
