@@ -14,9 +14,9 @@ const REF_RANGES = {
 export default function SettingsPage() {
   const [activeSubTab, setActiveSubTab] = useState('thresholds')
   const [onCallPhysicians, setOnCallPhysicians] = useState([
-    { name: 'Dr. Sarah Connor', pager: '555-0199', dept: 'Cardiology', active: true },
-    { name: 'Dr. John Doe', pager: '555-4201', dept: 'Hematology', active: true },
-    { name: 'Dr. Marcus Vance', pager: '555-9831', dept: 'Emergency Medicine', active: false },
+    { name: 'Dr. Akhil', pager: '555-0199', dept: 'Cardiology', active: true },
+    { name: 'Dr. Pradeep', pager: '555-4201', dept: 'Hematology', active: true },
+    { name: 'Dr. Govardhan', pager: '555-9831', dept: 'Emergency Medicine', active: false },
   ])
   const [newPhysician, setNewPhysician] = useState({ name: '', pager: '', dept: '' })
 
