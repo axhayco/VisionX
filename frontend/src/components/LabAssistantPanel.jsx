@@ -78,7 +78,6 @@ export default function LabAssistantPanel({ reports, onUploadClick, onDeleteRepo
                   <th>Patient Name</th>
                   <th>Ingested At</th>
                   <th>AI Extraction Confidence</th>
-                  <th>Assigned Triage</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -103,9 +102,7 @@ export default function LabAssistantPanel({ reports, onUploadClick, onDeleteRepo
                           <span className={`conf-score-num ${getConfidenceClass(conf)}`}>{conf}%</span>
                         </div>
                       </td>
-                      <td className="prio-cell">
-                        <span className={`badge ${report.priority}`}>{report.priority}</span>
-                      </td>
+
                       <td className="actions-cell">
                         <div className="action-button-group">
                           <button 

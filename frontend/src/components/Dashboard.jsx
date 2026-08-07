@@ -108,22 +108,6 @@ export default function Dashboard({ reports, selectedReportId, onSelectReport, o
           <span className="cc-kpi-value">{urgentCount}</span>
           <span className="cc-kpi-sub">Prioritised queue</span>
         </div>
-        <div className="cc-kpi-card cc-kpi-double">
-          <div className="cc-kpi-split">
-            <div>
-              <span className="cc-kpi-label">Avg AI Extraction</span>
-              <span className="cc-kpi-value-sm">{avgAISec}s</span>
-            </div>
-            <div className="cc-kpi-divider" />
-            <div>
-              <span className="cc-kpi-label">Avg Review SLA</span>
-              <span className="cc-kpi-value-sm">4.2m</span>
-            </div>
-          </div>
-          <span className="cc-kpi-sub" style={{ marginTop: 'auto', textAlign: 'center' }}>
-            Target review response &lt; 15.0m
-          </span>
-        </div>
       </div>
 
       {/* ─── QUEUE FEED LIST ─── */}
