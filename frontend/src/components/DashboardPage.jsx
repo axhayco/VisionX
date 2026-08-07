@@ -32,7 +32,7 @@ export default function DashboardPage({ reports, currentRole, onNavigate }) {
       {/* ─── GREETING HEADER ─── */}
       <div className="dashboard-welcome-banner">
         <div className="welcome-text-side">
-          <h2>Welcome back, Clinician 👋</h2>
+          <h2>Welcome back, {currentRole === 'doctor' ? 'Clinician' : 'Lab Assistant'} 👋</h2>
           <p>Here's a summary of the hospital's lab specimen and triage activity today.</p>
         </div>
         <div className="welcome-role-pill">
