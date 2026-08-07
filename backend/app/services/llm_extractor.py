@@ -148,9 +148,9 @@ def _extract_via_text(report_text: str) -> dict:
     if not groq_key:
         raise ValueError("GROQ_API_KEY environment variable is not configured.")
 
-
     from groq import Groq
     client = Groq(api_key=groq_key)
+    print("DEBUG: Sending text extraction request to Groq (model: llama-3.3-70b-versatile)...")
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
@@ -158,7 +158,12 @@ def _extract_via_text(report_text: str) -> dict:
         temperature=0.0,
     )
     raw = response.choices[0].message.content
-    return _sanitise_result(_parse_llm_json(raw))
+    print(f"DEBUG: Text Extraction LLM Raw Output: {raw!r}")
+    parsed = _parse_llm_json(raw)
+    print(f"DEBUG: Parsed JSON: {parsed}")
+    sanitized = _sanitise_result(parsed)
+    print(f"DEBUG: Sanitized Result: {sanitized}")
+    return sanitized
 
 
 
@@ -185,6 +190,7 @@ def _extract_via_vision(b64_image: str, mime_type: str = "image/png") -> dict:
 
     from groq import Groq
     client = Groq(api_key=groq_key)
+    print("DEBUG: Sending vision extraction request to Groq (model: qwen/qwen3.6-27b)...")
     response = client.chat.completions.create(
         model="qwen/qwen3.6-27b",
         messages=[{
@@ -199,7 +205,12 @@ def _extract_via_vision(b64_image: str, mime_type: str = "image/png") -> dict:
     )
 
     raw = response.choices[0].message.content
-    return _sanitise_result(_parse_llm_json(raw))
+    print(f"DEBUG: Vision Extraction LLM Raw Output: {raw!r}")
+    parsed = _parse_llm_json(raw)
+    print(f"DEBUG: Parsed JSON: {parsed}")
+    sanitized = _sanitise_result(parsed)
+    print(f"DEBUG: Sanitized Result: {sanitized}")
+    return sanitized
 
 
 
@@ -230,14 +241,16 @@ def extract_lab_values(
 
     if ext == "pdf":
         text = extract_text_from_pdf(file_bytes)
+        print(f"DEBUG: PDF filename={filename}, text length={len(text)}")
         if text and len(text) > 30:
-            # Native text PDF — fast path
+            print("DEBUG: Using text extraction strategy.")
             return _extract_via_text(text)
         else:
-            # Scanned PDF — render to image and use Vision LLM
+            print("DEBUG: PDF has very little text (scanned PDF). Falling back to Vision LLM strategy.")
             b64 = pdf_first_page_to_base64(file_bytes)
             return _extract_via_vision(b64, mime_type="image/png")
     else:
         # Direct image upload
+        print(f"DEBUG: Image filename={filename}, mime={mime}. Using Vision LLM strategy.")
         b64 = image_to_base64(file_bytes)
         return _extract_via_vision(b64, mime_type=mime)
