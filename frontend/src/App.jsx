@@ -3,6 +3,7 @@ import Dashboard from './components/Dashboard'
 import ReportDetail from './components/ReportDetail'
 import WorkflowModal from './components/WorkflowModal'
 import AlertToast from './components/AlertToast'
+import LabAssistantPanel from './components/LabAssistantPanel'
 
 // ─── Responsible AI principles ─────────────────────────────────────────────────
 // Displayed as a compact footer strip — visible but non-intrusive.
@@ -50,6 +51,8 @@ function App() {
   const [selectedReport, setSelectedReport] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [alertMessage, setAlertMessage] = useState(null)
+  const [currentRole, setCurrentRole] = useState('doctor')
+  const [newlyUploadedReport, setNewlyUploadedReport] = useState(null)
 
   const fetchReports = async () => {
     try {
@@ -74,20 +77,38 @@ function App() {
 
   // Show critical alert banner when a Critical report is viewed
   useEffect(() => {
-    if (selectedReport?.priority === 'Critical') {
+    if (selectedReport?.priority === 'Critical' && currentRole === 'doctor') {
       setAlertMessage(
         `CRITICAL ALERT — Triage notification sent to on-call clinician for ${selectedReport.patient_name}`
       )
     } else {
       setAlertMessage(null)
     }
-  }, [selectedReport])
+  }, [selectedReport, currentRole])
 
   // Called by WorkflowModal once the API call succeeds
   const handlePipelineComplete = async (newReport) => {
     setShowModal(false)
     await fetchReports()
-    setSelectedReport(newReport)
+    
+    if (currentRole === 'lab_assistant') {
+      // Flag that a new report was uploaded while in assistant mode
+      setNewlyUploadedReport(newReport)
+    } else {
+      setSelectedReport(newReport)
+    }
+  }
+
+  const handleRoleChange = (role) => {
+    setCurrentRole(role)
+    if (role === 'doctor' && newlyUploadedReport) {
+      // Trigger notification for the doctor
+      setAlertMessage(
+        `NEW SPECIMEN INGESTED — Lab assistant uploaded a new report for ${newlyUploadedReport.patient_name} (Priority: ${newlyUploadedReport.priority})`
+      )
+      setSelectedReport(newlyUploadedReport)
+      setNewlyUploadedReport(null)
+    }
   }
 
   // Delete a report by ID
@@ -115,20 +136,45 @@ function App() {
           <h1><span>🩺</span> VisionX Triage</h1>
           <p>AI-assisted clinical decision support · real-time lab report prioritization</p>
         </div>
-        <button className="new-report-btn" onClick={() => setShowModal(true)}>
-          <span>+</span> New Lab Report
-        </button>
+        
+        <div className="header-actions">
+          <div className="role-switcher">
+            <button 
+              className={`role-btn doctor-btn ${currentRole === 'doctor' ? 'active' : ''}`}
+              onClick={() => handleRoleChange('doctor')}
+            >
+              🩺 Doctor View
+              {newlyUploadedReport && <span className="notification-badge" />}
+            </button>
+            <button 
+              className={`role-btn lab-btn ${currentRole === 'lab_assistant' ? 'active' : ''}`}
+              onClick={() => handleRoleChange('lab_assistant')}
+            >
+              🔬 Lab Assistant
+            </button>
+          </div>
+        </div>
       </header>
 
-      <main className="main-layout">
-        <Dashboard
-          reports={reports}
-          selectedReportId={selectedReport?.id}
-          onSelectReport={setSelectedReport}
-          onDeleteReport={handleDeleteReport}
-        />
-        <ReportDetail report={selectedReport} />
-      </main>
+      {currentRole === 'doctor' ? (
+        <main className="main-layout">
+          <Dashboard
+            reports={reports}
+            selectedReportId={selectedReport?.id}
+            onSelectReport={setSelectedReport}
+            onDeleteReport={handleDeleteReport}
+          />
+          <ReportDetail report={selectedReport} />
+        </main>
+      ) : (
+        <main className="main-layout-single">
+          <LabAssistantPanel
+            reports={reports}
+            onUploadClick={() => setShowModal(true)}
+            onDeleteReport={handleDeleteReport}
+          />
+        </main>
+      )}
 
       <ResponsibleAIFooter />
 

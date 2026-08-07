@@ -138,7 +138,7 @@ export default function Dashboard({ reports, selectedReportId, onSelectReport, o
             <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '3rem 0' }}>
               <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📋</div>
               <div>No lab reports processed.</div>
-              <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Use the "+ New Lab Report" wizard.</div>
+              <div style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Waiting for specimen digitization from Lab Assistant.</div>
             </div>
           ) : (
             reports.map((report) => {
