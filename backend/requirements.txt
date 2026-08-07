@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+aiofiles
+groq
+pymupdf
+python-multipart
+python-dotenv
+psycopg2-binary
