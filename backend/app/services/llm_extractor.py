@@ -18,6 +18,7 @@ import os
 import json
 import re
 from typing import Optional
+# pyrefly: ignore [missing-import]
 from dotenv import load_dotenv
 from app.prompts import EXTRACTION_PROMPT_TEMPLATE
 
@@ -146,6 +147,7 @@ def _extract_via_text(report_text: str) -> dict:
     groq_key = os.environ.get("GROQ_API_KEY")
     if not groq_key:
         raise ValueError("GROQ_API_KEY environment variable is not configured.")
+
 
     from groq import Groq
     client = Groq(api_key=groq_key)
