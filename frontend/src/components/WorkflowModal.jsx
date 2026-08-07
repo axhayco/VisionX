@@ -405,7 +405,13 @@ export default function WorkflowModal({ onComplete, onClose }) {
               <button type="button" className="btn-secondary" onClick={() => setPhase('choose')}>
                 ← Back
               </button>
-              <button type="button" className="btn-submit" onClick={handleConfirm}>
+              <button 
+                type="button" 
+                className="btn-submit" 
+                onClick={handleConfirm}
+                disabled={!patientName || patientName.trim() === ''}
+                title={!patientName || patientName.trim() === '' ? "Patient name is required" : ""}
+              >
                 Confirm & Analyse →
               </button>
             </div>

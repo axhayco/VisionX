@@ -3889,8 +3889,14 @@ body {
   background-color: #4f46e5 !important;
   color: #ffffff !important;
 }
-.btn-submit:hover {
+.btn-submit:hover:not(:disabled) {
   background-color: #3c35b8 !important;
+}
+.btn-submit:disabled {
+  background-color: #94a3b8 !important;
+  color: #f1f5f9 !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
 }
 
 
