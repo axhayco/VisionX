@@ -4,6 +4,8 @@ import ReportDetail from './components/ReportDetail'
 import WorkflowModal from './components/WorkflowModal'
 import AlertToast from './components/AlertToast'
 import LabAssistantPanel from './components/LabAssistantPanel'
+import DashboardPage from './components/DashboardPage'
+import SettingsPage from './components/SettingsPage'
 
 // ─── Responsible AI principles ─────────────────────────────────────────────────
 // Displayed as a compact footer strip — visible but non-intrusive.
@@ -53,6 +55,7 @@ function App() {
   const [alertMessage, setAlertMessage] = useState(null)
   const [currentRole, setCurrentRole] = useState('doctor')
   const [newlyUploadedReport, setNewlyUploadedReport] = useState(null)
+  const [activeTab, setActiveTab] = useState('dashboard') // dashboard | reports | analyzer | settings
 
   const fetchReports = async () => {
     try {
@@ -77,14 +80,14 @@ function App() {
 
   // Show critical alert banner when a Critical report is viewed
   useEffect(() => {
-    if (selectedReport?.priority === 'Critical' && currentRole === 'doctor') {
+    if (selectedReport?.priority === 'Critical' && currentRole === 'doctor' && activeTab === 'reports') {
       setAlertMessage(
         `CRITICAL ALERT — Triage notification sent to on-call clinician for ${selectedReport.patient_name}`
       )
     } else {
       setAlertMessage(null)
     }
-  }, [selectedReport, currentRole])
+  }, [selectedReport, currentRole, activeTab])
 
   // Called by WorkflowModal once the API call succeeds
   const handlePipelineComplete = async (newReport) => {
@@ -92,22 +95,23 @@ function App() {
     await fetchReports()
     
     if (currentRole === 'lab_assistant') {
-      // Flag that a new report was uploaded while in assistant mode
       setNewlyUploadedReport(newReport)
+      setActiveTab('reports') // Route to reports log
     } else {
       setSelectedReport(newReport)
+      setActiveTab('reports') // Route to triage feed
     }
   }
 
   const handleRoleChange = (role) => {
     setCurrentRole(role)
     if (role === 'doctor' && newlyUploadedReport) {
-      // Trigger notification for the doctor
       setAlertMessage(
         `NEW SPECIMEN INGESTED — Lab assistant uploaded a new report for ${newlyUploadedReport.patient_name} (Priority: ${newlyUploadedReport.priority})`
       )
       setSelectedReport(newlyUploadedReport)
       setNewlyUploadedReport(null)
+      setActiveTab('reports') // Route to triage feed
     }
   }
 
@@ -126,57 +130,173 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      {alertMessage && (
-        <AlertToast message={alertMessage} onClose={() => setAlertMessage(null)} />
-      )}
-
-      <header className="app-header">
-        <div className="app-title-section">
-          <h1><span>🩺</span> VisionX Triage</h1>
-          <p>AI-assisted clinical decision support · real-time lab report prioritization</p>
-        </div>
-        
-        <div className="header-actions">
-          <div className="role-switcher">
-            <button 
-              className={`role-btn doctor-btn ${currentRole === 'doctor' ? 'active' : ''}`}
-              onClick={() => handleRoleChange('doctor')}
-            >
-              🩺 Doctor View
-              {newlyUploadedReport && <span className="notification-badge" />}
-            </button>
-            <button 
-              className={`role-btn lab-btn ${currentRole === 'lab_assistant' ? 'active' : ''}`}
-              onClick={() => handleRoleChange('lab_assistant')}
-            >
-              🔬 Lab Assistant
-            </button>
+    <div className="app-layout-wrapper">
+      {/* ─── LEFT SIDEBAR NAVIGATION ─── */}
+      <aside className="app-sidebar">
+        <div className="sidebar-brand-section">
+          <div className="brand-logo">🩺</div>
+          <div className="brand-text">
+            <h2>VisionX</h2>
+            <span>LAB ANALYZER</span>
           </div>
         </div>
-      </header>
 
-      {currentRole === 'doctor' ? (
-        <main className="main-layout">
-          <Dashboard
-            reports={reports}
-            selectedReportId={selectedReport?.id}
-            onSelectReport={setSelectedReport}
-            onDeleteReport={handleDeleteReport}
-          />
-          <ReportDetail report={selectedReport} />
-        </main>
-      ) : (
-        <main className="main-layout-single">
-          <LabAssistantPanel
-            reports={reports}
-            onUploadClick={() => setShowModal(true)}
-            onDeleteReport={handleDeleteReport}
-          />
-        </main>
-      )}
+        <nav className="sidebar-nav-menu">
+          <button 
+            className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+            onClick={() => setActiveTab('dashboard')}
+          >
+            <span className="nav-icon">📊</span>
+            <span className="nav-label">Dashboard</span>
+          </button>
 
-      <ResponsibleAIFooter />
+          <button 
+            className={`nav-item ${activeTab === 'reports' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reports')}
+          >
+            <span className="nav-icon">📋</span>
+            <span className="nav-label">{currentRole === 'doctor' ? 'Triage Queue' : 'Specimen Logs'}</span>
+            {newlyUploadedReport && <span className="nav-badge-alert" />}
+          </button>
+
+          <button 
+            className={`nav-item ${activeTab === 'analyzer' ? 'active' : ''}`}
+            onClick={() => {
+              setActiveTab('analyzer');
+              if (currentRole === 'lab_assistant') setShowModal(true);
+            }}
+          >
+            <span className="nav-icon">🔬</span>
+            <span className="nav-label">Analyzer</span>
+          </button>
+
+          <button 
+            className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            <span className="nav-icon">⚙️</span>
+            <span className="nav-label">Settings</span>
+          </button>
+        </nav>
+
+        {/* Sidebar Footer (Role Switcher + Profile) */}
+        <div className="sidebar-footer">
+          <div className="sidebar-role-toggle">
+            <span className="toggle-label">Workspace Access</span>
+            <div className="segmented-toggle">
+              <button 
+                className={`toggle-btn ${currentRole === 'doctor' ? 'active-doctor' : ''}`}
+                onClick={() => handleRoleChange('doctor')}
+                title="Switch to Physician Triage Queue"
+              >
+                MD
+              </button>
+              <button 
+                className={`toggle-btn ${currentRole === 'lab_assistant' ? 'active-lab' : ''}`}
+                onClick={() => handleRoleChange('lab_assistant')}
+                title="Switch to Specimen Ingestion"
+              >
+                Lab
+              </button>
+            </div>
+          </div>
+
+          <div className="user-profile-card">
+            <div className="user-avatar">AV</div>
+            <div className="user-info">
+              <h4>Andy Verma</h4>
+              <span>General Manager</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* ─── MAIN CONTENT CONTAINER ─── */}
+      <div className="app-main-content">
+        {alertMessage && (
+          <AlertToast message={alertMessage} onClose={() => setAlertMessage(null)} />
+        )}
+
+        {/* Header Strip */}
+        <header className="content-header-strip">
+          <div className="header-breadcrumbs">
+            <span className="breadcrumb-parent">VisionX CDSS</span>
+            <span className="breadcrumb-separator">/</span>
+            <span className="breadcrumb-current capitalize">{activeTab}</span>
+          </div>
+          <div className="header-meta-pills">
+            <div className="status-pill-green">
+              <span className="status-dot" />
+              <span>System Online</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Route Renderings */}
+        <main className="content-view-viewport">
+          {activeTab === 'dashboard' && (
+            <DashboardPage 
+              reports={reports} 
+              currentRole={currentRole} 
+              onNavigate={setActiveTab} 
+            />
+          )}
+
+          {activeTab === 'reports' && (
+            currentRole === 'doctor' ? (
+              <div className="main-layout">
+                <Dashboard
+                  reports={reports}
+                  selectedReportId={selectedReport?.id}
+                  onSelectReport={setSelectedReport}
+                  onDeleteReport={handleDeleteReport}
+                />
+                <ReportDetail report={selectedReport} />
+              </div>
+            ) : (
+              <div className="main-layout-single">
+                <LabAssistantPanel
+                  reports={reports}
+                  onUploadClick={() => setShowModal(true)}
+                  onDeleteReport={handleDeleteReport}
+                />
+              </div>
+            )
+          )}
+
+          {activeTab === 'analyzer' && (
+            currentRole === 'lab_assistant' ? (
+              <div className="analyzer-view-page card-panel">
+                <div className="analyzer-hero">
+                  <div className="hero-icon">📁</div>
+                  <h3>Analyzer digitisation Portal</h3>
+                  <p>Upload a patient specimen report (PDF or Image) to parse raw values and initiate explainable triage summaries.</p>
+                  <button className="primary-upload-btn" onClick={() => setShowModal(true)}>
+                    + Select Specimen File
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="analyzer-view-page card-panel">
+                <div className="analyzer-hero">
+                  <div className="hero-icon warning-icon">🔒</div>
+                  <h3>Ingestion Restricted</h3>
+                  <p>File uploading and raw OCR digitisation is restricted to the Laboratory Department.</p>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                    Please toggle your active workspace to <strong>Lab Assistant</strong> in the left sidebar to proceed.
+                  </span>
+                </div>
+              </div>
+            )
+          )}
+
+          {activeTab === 'settings' && (
+            <SettingsPage />
+          )}
+        </main>
+
+        <ResponsibleAIFooter />
+      </div>
 
       {showModal && (
         <WorkflowModal
