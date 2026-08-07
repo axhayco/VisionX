@@ -7,46 +7,6 @@ import LabAssistantPanel from './components/LabAssistantPanel'
 import DashboardPage from './components/DashboardPage'
 import SettingsPage from './components/SettingsPage'
 
-// ─── Responsible AI principles ─────────────────────────────────────────────────
-// Displayed as a compact footer strip — visible but non-intrusive.
-// Each item maps to a concrete architectural decision in VisionX.
-const RAI_ITEMS = [
-  { icon: '👨‍⚕️', label: 'Doctor is final decision maker',           detail: 'AI output is advisory only — no autonomous clinical actions'   },
-  { icon: '⚖️',  label: 'Priority via explainable clinical rules',  detail: 'Deterministic thresholds, fully auditable — no black-box ML'    },
-  { icon: '🤖',  label: 'AI generates summaries only',              detail: 'LLM role is limited to plain-language explanation, not diagnosis' },
-  { icon: '🔒',  label: 'Patient data processed securely',          detail: 'No data stored externally — SQLite on-premise, no cloud logging' },
-  { icon: '🏗️',  label: 'Self-hosted LLM deployment ready',         detail: 'Architecture supports Ollama / vLLM to eliminate external APIs'  },
-]
-
-function ResponsibleAIFooter() {
-  const [expanded, setExpanded] = useState(null)
-
-  return (
-    <footer className="rai-footer">
-      <div className="rai-shield">
-        <span className="rai-shield-icon">🛡️</span>
-        <span className="rai-shield-label">Responsible AI</span>
-      </div>
-
-      <div className="rai-items">
-        {RAI_ITEMS.map((item, i) => (
-          <button
-            key={i}
-            className={`rai-item ${expanded === i ? 'rai-item-active' : ''}`}
-            onClick={() => setExpanded(expanded === i ? null : i)}
-            title={item.detail}
-          >
-            <span className="rai-item-icon">{item.icon}</span>
-            <span className="rai-item-label">{item.label}</span>
-            {expanded === i && (
-              <span className="rai-item-detail">{item.detail}</span>
-            )}
-          </button>
-        ))}
-      </div>
-    </footer>
-  )
-}
 
 function App() {
   const [reports, setReports] = useState([])
@@ -295,7 +255,7 @@ function App() {
           )}
         </main>
 
-        <ResponsibleAIFooter />
+
       </div>
 
       {showModal && (
